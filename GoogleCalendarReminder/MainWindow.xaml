@@ -1,0 +1,133 @@
+﻿<Window x:Class="GoogleCalendarReminder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:GoogleCalendarReminder" xmlns:Converters="clr-namespace:GoogleCalendarReminder.Converters" Title="Google Calendar Reminders" 
+        Height="350" Width="500" 
+        MinHeight="350" MinWidth="400"
+        Background="WhiteSmoke"
+        x:Name="MainWindowControl" 
+        Icon="/GoogleCalendarReminder;component/Resources/calendar.png"
+        Closing="OnClose"
+        StateChanged="OnStateChanged"
+        IsVisibleChanged="OnIsVisibleChanged"
+        Loaded="MainWindowControlLoaded" 
+        Topmost="True" WindowState="Normal">
+    <Window.Resources>
+        <Converters:DueInConverter x:Key="DueInConverter" />
+        <Converters:SnoozeConverter x:Key="SnoozeConverter" />
+    </Window.Resources>
+    
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                <StackPanel.Background>
+                    <LinearGradientBrush StartPoint="0, 0" EndPoint="0,1" Opacity=".3">
+                        <GradientStop Color="Transparent" Offset="0" />
+                        <GradientStop Color="{Binding ElementName=MainWindowControl, Path=SelectedCalendarEvent.Color}" Offset="1" />
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+                <Label Content="{Binding ElementName=MainWindowControl, Path=SelectedCalendarEvent.Subject}" 
+                   FontWeight="Bold" Height="26" DockPanel.Dock="Top" />
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" >
+                    <Label Content="Start time:" />
+                    <Label Content="{Binding ElementName=MainWindowControl, Path=SelectedCalendarEvent.StartTime}" />
+                    <!--<Label Content="End time:" Margin="20,0,0,0" />
+                    <Label Content="{Binding ElementName=MainWindowControl, Path=SelectedCalendarEvent.EndTime}" />-->
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Label Content="Location:" />
+                    <Label Content="{Binding ElementName=MainWindowControl, Path=SelectedCalendarEvent.Location}" />
+                </StackPanel>
+            </StackPanel>
+            
+            <DockPanel DockPanel.Dock="Bottom">
+                <Label Content="Click Snooze to be reminded again in:" Margin="0,0,0,-8" DockPanel.Dock="Top" />
+                <Button Content="Snooze" Padding="20,0" Margin="5" DockPanel.Dock="Right" IsDefault="True"
+                        Click="SnoozeClicked"/>
+                <ComboBox Name="SnoozeCombo" Margin="5" DockPanel.Dock="Left"
+                          ItemsSource="{Binding SnoozeCollection}"
+                          SelectedItem="{Binding SnoozeValue}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource SnoozeConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <!--<ComboBox Name="SnoozeCombo1" Margin="5" DockPanel.Dock="Left"
+                          SelectedItem="{Binding SnoozeValue}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource SnoozeConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBoxItem Content="-5" />
+                    <ComboBoxItem Content="-10" />
+                    <ComboBoxItem Content="5" />
+                    <ComboBoxItem Content="10" />
+                    <ComboBoxItem Content="15" />
+                    <ComboBoxItem Content="20" />
+                    <ComboBoxItem Content="25" />
+                    <ComboBoxItem Content="30" />
+                    <ComboBoxItem Content="45" />
+                    <ComboBoxItem Content="60" />
+                </ComboBox>-->
+            </DockPanel>
+            
+            <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+                <Button Content="Dismiss All" Padding="20,1" Margin="5" DockPanel.Dock="Left" IsDefault="False"
+                        Click="DismissAllClicked" />
+                <Button Content="Dismiss" Padding="20,0" Margin="5" DockPanel.Dock="Right" IsDefault="False"
+                        Click="DismissClicked"/>
+                <Button Content="Open Item" Padding="20,0" Margin="5" DockPanel.Dock="Right" IsDefault="False"
+                        Click="OpenItemClicked"/>
+            </DockPanel>
+
+            <ListView Name="CalendarEventList" Margin="5"
+                      ItemsSource="{Binding CalendarEventCollection}"
+                      SelectedItem="{Binding ElementName=MainWindowControl, Path=SelectedCalendarEvent}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <!--<Setter Property="Background" Value="{Binding Color}" />
+                    <Setter Property="Foreground" Value="White" />-->
+                        <Setter Property="BorderBrush" Value="{Binding Color}" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0, 0" EndPoint="0,1" Opacity=".3">
+                                    <GradientStop Color="White" Offset="0" />
+                                    <GradientStop Color="{Binding Color}" Offset="1" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <!--<GridViewColumn Width="250" Header="Subject" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Fill="{Binding Color}" Width="10" Height="10" /> 
+                                        <TextBlock Text="{Binding Subject}" Margin="5,0,0,0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>-->
+                        <GridViewColumn Width="250" DisplayMemberBinding="{Binding Subject}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Content="Subject" HorizontalContentAlignment="Left"/>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="150" DisplayMemberBinding="{Binding StartTime, Converter={StaticResource DueInConverter}}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Content="Due in" HorizontalContentAlignment="Left"/>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>    
+    </Grid>
+</Window>

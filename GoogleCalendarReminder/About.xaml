@@ -1,0 +1,31 @@
+﻿<Window x:Class="GoogleCalendarReminder.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About" 
+        Height="148" Width="385"
+        Background="WhiteSmoke"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="5">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Image Height="75" Width="75" Source="/GoogleCalendarReminder;component/Resources/calendar.png" VerticalAlignment="Top" />  
+            <StackPanel Orientation="Vertical" Margin="5,0,0,0">
+                <TextBlock Text="{Binding AppName}" FontWeight="Bold" FontSize="20"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Version:" />
+                    <TextBlock Text="{Binding VersionNumber}" Margin="5,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Author:" />
+                    <TextBlock Text="{Binding Author}" Margin="5,0,0,0" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        
+        <!--<TextBlock Text="Send any feedback to cdanschutz@gmail.com" Margin="10" DockPanel.Dock="Bottom" />-->
+        
+        
+        
+
+    </DockPanel>
+</Window>
