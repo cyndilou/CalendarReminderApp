@@ -21,7 +21,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Username:" Grid.Row="0" Grid.Column="0" />
+                <Label Content="Email:" Grid.Row="0" Grid.Column="0" />
                 <TextBox Name="UserNameEdit" Grid.Row="0" Grid.Column="1" TabIndex="1" VerticalAlignment="Center"
                      Text="{Binding Username}" />
                 <Label Content="Password:" Grid.Row="1" Grid.Column="0" />
