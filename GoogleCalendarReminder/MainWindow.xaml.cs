@@ -295,11 +295,15 @@ namespace GoogleCalendarReminder
 
         private void FilterView()
         {
+            var selectedItem = CalendarEventList.SelectedIndex;
+
             var view = CollectionViewSource.GetDefaultView(CalendarEventList.ItemsSource);
             view.Filter = null;
             view.Filter = new Predicate<object>(FilterTestEvents);
             view.SortDescriptions.Clear();
             view.SortDescriptions.Add(new SortDescription("StartTime", ListSortDirection.Ascending));
+
+            CalendarEventList.SelectedIndex = selectedItem >= CalendarEventList.Items.Count ? (CalendarEventList.Items.Count - 1) : selectedItem;
 
             if (CalendarEventList.SelectedIndex == -1)
             {

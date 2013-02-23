@@ -71,6 +71,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\calendar.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.GData.AccessControl, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
