@@ -40,6 +40,8 @@ namespace GoogleCalendarReminder
 
         //public bool IsActive { get; set; }
 
+        public bool IsDue { get { return Status != EventStatus.Dismissed && ReminderTime <= DateTime.Now; } }
+
         #endregion
 
         #region Constructor

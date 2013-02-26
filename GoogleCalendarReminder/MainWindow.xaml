@@ -7,10 +7,8 @@
         Background="WhiteSmoke"
         x:Name="MainWindowControl" 
         Icon="/GoogleCalendarReminder;component/Resources/calendar.png"
-        Closing="OnClose"
-        StateChanged="OnStateChanged"
-        IsVisibleChanged="OnIsVisibleChanged"
-        Loaded="MainWindowControlLoaded" 
+        Closing="OnMainWindowControlClosing"
+        Activated="OnMainWindowControlActivated"
         Topmost="True" WindowState="Normal">
     <Window.Resources>
         <Converters:DueInConverter x:Key="DueInConverter" />

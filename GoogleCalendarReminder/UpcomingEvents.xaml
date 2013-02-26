@@ -7,6 +7,7 @@
         Height="350" Width="550"
         MinHeight="350" MinWidth="400" 
         Icon="/GoogleCalendarReminder;component/Resources/calendar.png"
+        Closing="OnUpcomingEventsClosing"
         Loaded="Window_Loaded">
 
     <Window.Resources>

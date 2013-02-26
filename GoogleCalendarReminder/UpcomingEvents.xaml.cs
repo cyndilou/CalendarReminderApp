@@ -20,23 +20,33 @@ namespace GoogleCalendarReminder
     /// </summary>
     public partial class UpcomingEvents : Window
     {
-        public List<CalendarEvent> CalendarEventCollection { get; set; }
+        public ReadOnlyObservableCollection<CalendarEvent> CalendarEventCollection { get { return GoogleCalendarReminder.CalendarEventManager.Instance.CalendarEventCollection; } }
 
-        public UpcomingEvents(List<CalendarEvent> calendarEventCollection)
+        #region Singleton
+
+        private static readonly UpcomingEvents _instance = new UpcomingEvents();
+        public static UpcomingEvents Instance { get { return _instance; } }
+
+        private UpcomingEvents()
         {
             InitializeComponent();
 
-            CalendarEventCollection = calendarEventCollection;
             DataContext = this;
 
             CalendarEventList.Items.SortDescriptions.Add(new SortDescription("StartTime", ListSortDirection.Ascending));
             CalendarEventList.Items.Refresh();
         }
 
-        private void OnClose(object sender, RoutedEventArgs e)
+        private void OnUpcomingEventsClosing(object sender, CancelEventArgs e)
         {
-            Close();
+            // Since this window is a singleton, prevent it from actually closing, otherwise it won't be able to be opened again
+            Hide();
+            e.Cancel = true;
         }
+
+        #endregion
+
+        #region Window Events
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -47,31 +57,23 @@ namespace GoogleCalendarReminder
             view.Filter = new Predicate<object>(o => ((CalendarEvent)o).Status != EventStatus.Dismissed);
         }
 
+        
+
+        #endregion
+
         private void OnOpenItem(object sender, RoutedEventArgs e)
         {
             var calendarEvent = CalendarEventList.SelectedItem as CalendarEvent;
             if (calendarEvent == null) return;
 
-            OpenItem(calendarEvent);
+            GoogleCalendarReminder.CalendarEventManager.Instance.OpenItem(calendarEvent);
         }
 
         protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var calendarEvent = ((ListViewItem)sender).Content as CalendarEvent;
 
-            OpenItem(calendarEvent);
-        }
-
-        private void OpenItem(CalendarEvent calendarEvent)
-        {
-            try
-            {
-                System.Diagnostics.Process.Start(calendarEvent.Url);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            GoogleCalendarReminder.CalendarEventManager.Instance.OpenItem(calendarEvent);
         }
     }
 }

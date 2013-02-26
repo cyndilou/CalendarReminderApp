@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 using GoogleCalendarReminder.Properties;
 using GoogleCalendarReminder.Utility;
+using System.Collections.ObjectModel;
 
 namespace GoogleCalendarReminder
 {
@@ -18,18 +19,6 @@ namespace GoogleCalendarReminder
     /// </summary>
     public partial class MainWindow
     {
-        #region Private Members
-
-        private readonly DispatcherTimer _updateTimer;
-        private System.Windows.Forms.NotifyIcon _notifyIcon;
-        private WindowState _storedWindowState = WindowState.Normal;
-        private bool _shutdown = false;
-        private const double Version = 0.1;
-        private readonly string _feedbackUrl = "https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dDJjekFWRUQxck9idk1OOVdSNklMYXc6MQ#gid=0";
-        private readonly string _issueLogUrl = "https://spreadsheets.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgH-9As5hO3RdDJjekFWRUQxck9idk1OOVdSNklMYXc&output=html";
-        
-        #endregion
-
         #region Public Properties
 
         public MainWindowViewModel ViewModel 
@@ -63,49 +52,35 @@ namespace GoogleCalendarReminder
 
         #endregion
 
-        #region Constructor
+        #region Singleton
 
-        public MainWindow()
+        private static readonly MainWindow _instance = new MainWindow();
+        public static MainWindow Instance { get { return _instance; } }
+
+        private MainWindow()
         {
             InitializeComponent();
 
             ViewModel = new MainWindowViewModel();
+        }
 
-            _updateTimer = new DispatcherTimer
-                               {
-                                   Interval = TimeUtility.GetTimeSpan(1)
-                               };
+        private void OnMainWindowControlClosing(object sender, CancelEventArgs e)
+        {
+            // Since this window is a singleton, prevent it from actually closing, otherwise it won't be able to be opened again
+            Hide();
+            e.Cancel = true;
 
-            _updateTimer.Tick += UpdateTimerTick;
-            _updateTimer.Start();
+            var view = CollectionViewSource.GetDefaultView(CalendarEventList.ItemsSource);
+            view.Filter = null;
+        }
 
-            _notifyIcon = new System.Windows.Forms.NotifyIcon
-                              {
-                                  BalloonTipTitle = Properties.Resources.NotifierTitle,
-                                  Text = Properties.Resources.NotifierTitle
-                              };
+        #endregion
 
-            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("GoogleCalendarReminder.Resources.calendar.ico");
-            if (stream != null)
-            {
-                _notifyIcon.Icon = new Icon(stream);
-            }
+        #region Window Events
 
-            _notifyIcon.DoubleClick += NotifyIconClick;
-
-            _notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Refresh Calendars", OnRefresh));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Upcoming Events...", OnUpcomingEvents));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Settings...", new EventHandler(OnSettings)));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("-"));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Send Feedback...", OnFeedback));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("View Issue Log...", OnViewLog));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("-"));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("About...", OnAbout));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("-"));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Exit", OnExit));
-            
-            _notifyIcon.Visible = true;
+        private void OnMainWindowControlActivated(object sender, EventArgs e)
+        {
+            FilterView();
         }
 
         #endregion
@@ -161,78 +136,6 @@ namespace GoogleCalendarReminder
             }
         }
 
-        private void UpdateTimerTick(object sender, EventArgs e)
-        {
-            FilterView();
-        }
-
-        void OnClose(object sender, CancelEventArgs args)
-        {
-            if (_shutdown == false)
-            {
-                args.Cancel = true;
-                WindowState = WindowState.Minimized;
-                return;
-            }
-
-            _notifyIcon.Dispose();
-            _notifyIcon = null;
-        }
-
-        void OnStateChanged(object sender, EventArgs args)
-        {
-            if (WindowState == WindowState.Minimized)
-            {
-                Hide();
-            }
-            else
-            {
-                _storedWindowState = WindowState;
-            }
-        }
-
-        private void NotifyIconClick(object sender, EventArgs e)
-        {
-            //if (e.Button == MouseButtons.Left)
-            //{
-            //    var preview = new UpcomingEvents(ViewModel.CalendarEventCollection.ToList());
-
-            //    //var x = Mouse.GetPosition(this).X - preview.ActualWidth;
-            //    //var y = Mouse.GetPosition(this).Y - preview.ActualHeight - 10;
-            //    //if (y < 0)
-            //    //    y = Mouse.GetPosition(this).Y;
-
-            //    //preview..SetDesktopLocation(x, y);
-            //    preview.Show();
-            //}
-
-            if (CalendarEventList.Items.Count > 0)
-            {
-                Show();
-                WindowState = WindowState.Normal;
-                //WindowState = _storedWindowState;
-            }
-            else
-            {
-                var upcomingEvents = new UpcomingEvents(ViewModel.CalendarEventCollection.ToList());
-
-                //var x = Mouse.GetPosition(this).X - upcomingEvents.Width;
-                //var y = Mouse.GetPosition(this).Y - upcomingEvents.Height - 10;
-                //if (y < 0)
-                //    y = Mouse.GetPosition(this).Y;
-
-                //upcomingEvents.Left = x;
-                //upcomingEvents.Top = y;
-
-                upcomingEvents.Show();
-            }
-
-            
-
-            //Show();
-            //WindowState = m_storedWindowState;
-        }
-
         protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var calendarEvent = ((ListViewItem)sender).Content as CalendarEvent;
@@ -245,48 +148,6 @@ namespace GoogleCalendarReminder
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        #endregion
-
-        #region Content Menu Item Handlers
-
-        private void OnSettings(object sender, EventArgs e)
-        {
-            ShowSettings(false);
-        }
-
-        private void OnFeedback(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start(_feedbackUrl);
-        }
-
-        private void OnViewLog(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start(_issueLogUrl);
-        }
-
-        private void OnRefresh(object sender, EventArgs e)
-        {
-            ViewModel.RefreshCalendarEntries();
-        }
-
-        private static void OnAbout(object sender, EventArgs e)
-        {
-            About about = new About();
-            about.ShowDialog();
-        }
-
-        private void OnExit(object sender, EventArgs e)
-        {
-            _shutdown = true;
-            Close();
-        }
-
-        private void OnUpcomingEvents(object sender, EventArgs e)
-        {
-            var upcomingEvents = new UpcomingEvents(ViewModel.CalendarEventCollection.ToList());
-            upcomingEvents.Show();
         }
 
         #endregion
@@ -312,13 +173,7 @@ namespace GoogleCalendarReminder
 
             if (CalendarEventList.Items.Count <= 0)
             {
-                WindowState = WindowState.Minimized;
-            }
-            else
-            {
-                Show();
-                WindowState = WindowState.Normal;
-                //WindowState = _storedWindowState;
+                Close();
             }
         }
 
@@ -327,45 +182,10 @@ namespace GoogleCalendarReminder
             var item = obj as CalendarEvent;
             if (item == null) return false;
 
-            return item.Status != EventStatus.Dismissed && item.ReminderTime <= DateTime.Now;
-        }
-
-        private void ShowTrayIcon(bool show)
-        {
-            if (_notifyIcon != null)
-            {
-                _notifyIcon.Visible = show;
-            }
+            return item.IsDue;
         }
 
         #endregion
 
-        private void MainWindowControlLoaded(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-            ShowSettings(true);
-        }
-
-        private void ShowSettings(bool closeOnCancel)
-        {
-            var settingsWindow = new AccountView();
-            if (((settingsWindow.ShowDialog() == false) && closeOnCancel)
-                || String.IsNullOrEmpty(Account.Default.Username))
-            {
-                _shutdown = true;
-                Close();
-                return;
-            }
-
-            ViewModel.CalendarEventCollection.Clear();
-            ViewModel.RefreshCalendarEntries();
-
-            FilterView();
-        }
-
-        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            //ShowTrayIcon(!IsVisible);
-        }
     }
 }

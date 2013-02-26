@@ -51,6 +51,12 @@ namespace GoogleCalendarReminder
             set { Settings.Default.LaunchOnStartup = value; }
         }
 
+        public bool IsAlwaysOnTop
+        {
+            get { return Settings.Default.IsAlwaysOnTop; }
+            set { Settings.Default.IsAlwaysOnTop = value; }
+        }
+
         #endregion Public Properties
 
         #region Constructor

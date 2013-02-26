@@ -15,6 +15,9 @@ namespace GoogleCalendarReminder
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
+
+            GoogleCalendarReminder.NotificationService.Instance.Start();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
