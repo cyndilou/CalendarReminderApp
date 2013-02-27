@@ -71,7 +71,11 @@ namespace GoogleCalendarReminder
             e.Cancel = true;
 
             var view = CollectionViewSource.GetDefaultView(CalendarEventList.ItemsSource);
-            view.Filter = null;
+
+            if (view != null)
+            {
+                view.Filter = null;
+            }
         }
 
         #endregion

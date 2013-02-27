@@ -10,6 +10,7 @@
         Icon="/GoogleCalendarReminder;component/Resources/calendar.png">
     <Window.Resources>
         <Converters:MyCalendarConverter x:Key="MyCalendarConverter" />
+        <Converters:GradientConverter x:Key="GradientConverter" />
     </Window.Resources>
     <Grid>
         <DockPanel Margin="5">
@@ -88,16 +89,8 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="{Binding Color}" BorderThickness="1">
-                            <Grid>
-                                <Grid.Background>
-                                    <LinearGradientBrush StartPoint="0, 0" EndPoint="0,1" Opacity=".3">
-                                        <GradientStop Color="Transparent" Offset="0" />
-                                        <GradientStop Color="{Binding Color}" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Grid.Background>
-
+                            <Grid Background="{Binding Color, Converter={StaticResource GradientConverter}}">
                                 <CheckBox Content="{Binding Title}" IsChecked="{Binding IsSelected}"  HorizontalAlignment="Stretch" />
-
                             </Grid>
                         </Border>
                     </DataTemplate>

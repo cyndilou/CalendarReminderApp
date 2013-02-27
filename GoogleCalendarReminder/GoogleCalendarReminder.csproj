@@ -121,6 +121,9 @@
     </Compile>
     <Compile Include="Account.cs" />
     <Compile Include="CalendarEventManager.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DurationConverter.cs" />
+    <Compile Include="Converters\GradientConverter.cs" />
     <Compile Include="GoogleCalendarAuthToken.cs" />
     <Compile Include="GoogleCalendarService.cs" />
     <Compile Include="NotificationService.cs" />
@@ -140,6 +143,9 @@
       <DependentUpon>IssueLog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="SelectedListItemControl.xaml.cs">
+      <DependentUpon>SelectedListItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Utility\SecureStringUtility.cs" />
     <Compile Include="AccountView.xaml.cs">
@@ -172,6 +178,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="AccountView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelectedListItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

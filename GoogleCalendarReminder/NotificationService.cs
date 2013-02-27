@@ -172,6 +172,8 @@ namespace GoogleCalendarReminder
 
         private void ShowMainWindow()
         {
+            GoogleCalendarReminder.UpcomingEvents.Instance.Close();
+
             GoogleCalendarReminder.MainWindow.Instance.Topmost = Settings.Default.IsAlwaysOnTop;
             GoogleCalendarReminder.MainWindow.Instance.Show();
             GoogleCalendarReminder.MainWindow.Instance.Activate();
@@ -179,6 +181,8 @@ namespace GoogleCalendarReminder
 
         private void ShowUpcomingEvents()
         {
+            GoogleCalendarReminder.MainWindow.Instance.Close();
+
             GoogleCalendarReminder.UpcomingEvents.Instance.Topmost = Settings.Default.IsAlwaysOnTop;
             GoogleCalendarReminder.UpcomingEvents.Instance.Show();
             GoogleCalendarReminder.UpcomingEvents.Instance.Activate();

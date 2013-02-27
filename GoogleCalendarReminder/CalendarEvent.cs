@@ -35,6 +35,8 @@ namespace GoogleCalendarReminder
         public string Url { get; set; }
         public string Color { get; set; }
 
+        public TimeSpan Duration { get { return EndTime - StartTime; } }
+
         public EventStatus Status { get; set; }
         public ParticipantStatus MyStatus { get; set; }
 

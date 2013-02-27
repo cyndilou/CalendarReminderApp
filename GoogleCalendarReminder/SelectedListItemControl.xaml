@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="GoogleCalendarReminder.SelectedListItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:GoogleCalendarReminder="clr-namespace:GoogleCalendarReminder" 
+             xmlns:Converters="clr-namespace:GoogleCalendarReminder.Converters" 
+             mc:Ignorable="d" 
+             Name="SelectedListItemControlUC"
+             Width="Auto" >
+    <UserControl.Resources>
+        <Converters:DueInConverter x:Key="DueInConverter" />
+        <Converters:DurationConverter x:Key="DurationConverter" />
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <Converters:GradientConverter x:Key="GradientConverter" />
+
+        <Style x:Key="TransparentButton" TargetType="Button">
+            <Setter Property="BorderBrush" Value="{Binding Color}" />
+            <Setter Property="Background" Value="{Binding Color, Converter={StaticResource GradientConverter}}" />
+        </Style>
+        <Style x:Key="TransparentCombo" TargetType="ComboBox">
+            <Setter Property="BorderBrush" Value="{Binding Color}" />
+            <Setter Property="Background" Value="{Binding Color, Converter={StaticResource GradientConverter}}" />
+        </Style>
+    </UserControl.Resources>
+
+    <Border BorderBrush="{Binding Color}" BorderThickness="1" CornerRadius="2">
+
+        <StackPanel Orientation="Vertical" Margin="2" Background="{Binding Color, Converter={StaticResource GradientConverter}}">
+            <DockPanel LastChildFill="True" Margin="0,2">
+                <TextBlock Text="{Binding StartTime, Converter={StaticResource DueInConverter}}"
+                               Visibility="{Binding IsDue, Converter={StaticResource BoolToVisibilityConverter}}"
+                               VerticalAlignment="Top" Margin="5,0" DockPanel.Dock="Right" />
+                <TextBlock Text="Due in:" 
+                               Visibility="{Binding IsDue, Converter={StaticResource BoolToVisibilityConverter}}"
+                               VerticalAlignment="Top" Margin="2,0" DockPanel.Dock="Right" />
+                <TextBlock Text="{Binding Subject}" 
+                               TextWrapping="Wrap"
+                       FontWeight="Bold" FontSize="14" 
+                       DockPanel.Dock="Left"
+                       Margin="5,0" />
+            </DockPanel>
+
+            <DockPanel LastChildFill="False" Margin="0,2">
+                <TextBlock Text="Start time:" Margin="2,0" DockPanel.Dock="Left" />
+                <TextBlock Text="{Binding StartTime, StringFormat=t}" Margin="5,0" DockPanel.Dock="Left" />
+                <TextBlock Text="{Binding Duration, Converter={StaticResource DurationConverter}}" Margin="5,0" DockPanel.Dock="Right" />
+                <TextBlock Text="Duration:" Margin="2,0" DockPanel.Dock="Right" />
+            </DockPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,2">
+                <TextBlock Text="Location:" Margin="2,0" />
+                <TextBlock Text="{Binding Location}" Margin="5,0" />
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
+</UserControl>
