@@ -7,7 +7,12 @@ namespace GoogleCalendarReminder.Utility
         private const bool Debug = false;
         public static TimeSpan GetTimeSpan(int value)
         {
-            return new TimeSpan(0, !Debug ? value : 0, Debug ? value : 0);
+#if DEBUG
+            return new TimeSpan(0, 0, 1);
+#else
+            return new TimeSpan(0, 1, 0);
+#endif
+            //return new TimeSpan(0, !Debug ? value : 0, Debug ? value : 0);
         }
     }
 }

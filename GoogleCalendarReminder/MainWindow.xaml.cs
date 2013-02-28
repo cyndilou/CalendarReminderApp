@@ -80,6 +80,24 @@ namespace GoogleCalendarReminder
 
         #endregion
 
+        #region Public Methods
+
+        public void Show(bool isTopmost)
+        {
+            Topmost = isTopmost;
+            
+            Show();
+
+            if (!Topmost)
+            {
+                Activate();
+            }
+
+            FilterView();
+        }
+
+        #endregion
+
         #region Window Events
 
         private void OnMainWindowControlActivated(object sender, EventArgs e)
