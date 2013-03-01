@@ -88,11 +88,6 @@ namespace GoogleCalendarReminder
             
             Show();
 
-            if (!Topmost)
-            {
-                Activate();
-            }
-
             FilterView();
         }
 
