@@ -112,6 +112,7 @@
                         <Setter Property="BorderThickness" Value="1" />
                         <Setter Property="Background" Value="{Binding Color, Converter={StaticResource GradientConverter}}">
                         </Setter>
+                        <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
                         <!--<Setter Property="Opacity" Value="{Binding Status, Converter={StaticResource StatusToOpacityConverter}}" />-->
                     </Style>
                 </ListView.ItemContainerStyle>
