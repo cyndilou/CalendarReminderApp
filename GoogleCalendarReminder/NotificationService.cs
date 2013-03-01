@@ -21,8 +21,8 @@ namespace GoogleCalendarReminder
         private readonly DispatcherTimer _updateTimer;
         private System.Windows.Forms.NotifyIcon _notifyIcon;
 
-        private readonly string _feedbackUrl = "https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dDJjekFWRUQxck9idk1OOVdSNklMYXc6MQ#gid=0";
-        private readonly string _issueLogUrl = "https://spreadsheets.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgH-9As5hO3RdDJjekFWRUQxck9idk1OOVdSNklMYXc&output=html";
+        private readonly string _projectPageUrl = "http://cyndilou.github.com/CalendarReminderApp/";
+        private readonly string _issueLogUrl = "https://github.com/cyndilou/CalendarReminderApp/issues";
         
         #endregion
 
@@ -79,9 +79,9 @@ namespace GoogleCalendarReminder
             ShowSettings(false);
         }
 
-        private void OnFeedback(object sender, EventArgs e)
+        private void OnLaunchProjectPage(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(_feedbackUrl);
+            System.Diagnostics.Process.Start(_projectPageUrl);
         }
 
         private void OnViewLog(object sender, EventArgs e)
@@ -135,7 +135,7 @@ namespace GoogleCalendarReminder
             _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Upcoming Events...", OnUpcomingEvents));
             _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Settings...", new EventHandler(OnSettings)));
             _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("-"));
-            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Send Feedback...", OnFeedback));
+            _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("View Project Page...", OnLaunchProjectPage));
             _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("View Issue Log...", OnViewLog));
             _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("-"));
             _notifyIcon.ContextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("About...", OnAbout));
